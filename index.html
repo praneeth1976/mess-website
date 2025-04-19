@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agency</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="header">
+        <img class="logo" src="./assets/iitp-logo.png" alt="LOGO">
+        <h1>IIT-Patna-MESS-website</h1>
+    </div>
+    <div class="navbar">
+        <a href="./index.html"> <p>home</p> </a>
+        <a href="./assets/menu.pdf"> <p>menu</p> </a>
+        <a href="./forms.html"><p>forms</p></a>
+        <a href="./login.html"> <p>login</p> </a>
+        <a href="./abminlogin.html"> <p>abmin</p> </a>
+        <a href="./about.html"> <p>about</p> </a>
+    </div>
+
+    
+    <div class="content-row">
+        <div class="qr-box">
+            <h2>Weekday Timings</h2>
+            <p>Breakfast: 8:00 – 10:00</p>
+            <p>Lunch: 12:30 – 2:00</p>
+            <p>Dinner: 7:45 – 10:00</p>
+        </div>
+
+        <!-- Weekend Timings Box -->
+        <div class="qr-box">
+            <h2>Weekend Timings</h2>
+            <p>Breakfast: 8:30 – 10:30</p>
+            <p>Lunch: 1:00 – 2:30</p>
+            <p>Dinner: 7:45 – 10:00</p>
+        </div>
+    </div>
+    <div class="datetime-box">
+        <p id="datetime"></p>
+    </div>
+    
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const date = now.toLocaleDateString(undefined, options);
+            const time = now.toLocaleTimeString();
+            document.getElementById("datetime").textContent = `${date} | ${time}`;
+        }
+    
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+    
+    
+</body>
+
+</html>

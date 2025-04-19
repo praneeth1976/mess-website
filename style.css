@@ -1,0 +1,287 @@
+.logo{
+    float: left;
+    width: 30vw;
+    max-width: 300px;
+    height: auto;
+}
+.header{
+    background-color: white;
+    min-height: 80px;
+    height: auto;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+h1{
+    color: rgb(33, 33, 182);
+    display: inline-block;
+    text-align: center;
+    font-size: min(4vw, 4rem);
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+    width: auto;
+    flex-grow: 1;
+}
+
+.navbar{
+    clear: both;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #96f550;
+    padding: 20px;
+    border-radius: 10px;
+    height: 50px;
+}
+a > p{
+    color: black;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    margin: 0;
+}
+a{
+    text-decoration: none;
+}
+
+.qr-box, .meal-form {
+    margin: 10px auto;
+    padding: 10px;
+    max-width: 400px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.qr-box h2, .meal-form h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.qr-box p {
+    font-size: 18px;
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.meal-form label {
+    display: block;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.meal-form button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.meal-form button:hover {
+    background-color: #45a049;
+}
+.content-row {
+    display: flex;
+    justify-content: center;
+    gap: 200px;
+    row-gap: 50px;
+    flex-wrap: wrap; /* ensures responsiveness */
+}
+
+.qr-box, .meal-form {
+    flex: 1 1 400px;
+    max-width: 400px;
+    min-width: 300px;
+    margin: 20px 0;
+}
+
+.datetime-box {
+    max-width: 880px; /* Same as 2 x 400px + gap */
+    margin: 20px auto;
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 220px);
+    /* leave space for header + navbar */
+}
+
+.login-card {
+    background-color: white;
+    padding: 32px;
+    width: 400px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.input-field {
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login-button {
+    padding: 12px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.login-button:hover {
+    background-color: #1e40af;
+}
+
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 768px) {
+    .header {
+        justify-content: center;
+        text-align: center;
+        padding: 10px 5px;
+    }
+
+    .logo {
+        float: none;
+        width: 50vw;
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        font-size: min(6vw, 2rem);
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .navbar {
+        height: auto;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    a > p {
+        font-size: 1.2rem;
+    }
+
+    .content-row {
+        gap: 20px;
+        padding: 10px;
+    }
+
+    .qr-box, .meal-form {
+        min-width: 250px;
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .datetime-box {
+        font-size: 1.2rem;
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .login-container {
+        height: auto;
+        padding: 20px;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 350px;
+        padding: 20px;
+    }
+}
+
+/* Small mobile devices */
+@media screen and (max-width: 480px) {
+    .logo {
+        width: 70vw;
+        max-width: 150px;
+    }
+
+    h1 {
+        font-size: min(8vw, 1.5rem);
+    }
+
+    .navbar {
+        padding: 5px;
+    }
+
+    a > p {
+        font-size: 1rem;
+    }
+
+    .qr-box, .meal-form {
+        min-width: 200px;
+    }
+
+    .datetime-box {
+        font-size: 1rem;
+    }
+
+    .login-card {
+        padding: 15px;
+    }
+
+    .input-field, .login-button {
+        padding: 10px;
+    }
+}
+
+/* .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(90deg, rgba(0,36,61,1) 0%, rgba(9,121,105,1) 50%, rgba(0,212,255,1) 100%);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+    width: 40%;
+    height: auto;
+}
+
+h1 {
+    color: white;
+    font-size: 3.5rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    text-align: center;
+} */
