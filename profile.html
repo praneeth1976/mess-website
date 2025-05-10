@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .profile-card {
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-header h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .info-box {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .info-box h3 {
+            color: #2563eb;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .info-box p {
+            color: #333;
+            font-size: 1.1rem;
+            margin: 5px 0;
+        }
+
+        .qr-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .qr-section img {
+            max-width: 200px;
+            margin: 10px auto;
+        }
+
+        @media screen and (max-width: 768px) {
+            .profile-container {
+                padding: 10px;
+            }
+
+            .profile-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .info-box {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <img class="logo" src="./assets/iitp-logo.png" alt="LOGO">
+        <h1>IIT-Patna-MESS-website</h1>
+    </div>
+    <div class="navbar">
+        <a href="./user.html"><p>Home</p></a>
+        <a href="./assets/menu.pdf"><p>Menu</p></a>
+        <a href="./forms.html"><p>Forms</p></a>
+        <a href="./profile.html"><p>Profile</p></a>
+        <a href="./about.html"><p>About</p></a>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <h2>Student Profile</h2>
+            </div>
+            <div class="profile-info">
+                <div class="info-box">
+                    <h3>Personal Information</h3>
+                    <p><strong>Roll Number:</strong> <span id="rollNo"></span></p>
+                    <p><strong>Email:</strong> <span id="email"></span></p>
+                </div>
+                <div class="info-box">
+                    <h3>Mess Details</h3>
+                    <p><strong>Mess:</strong> IIT Patna Mess</p>
+                    <p><strong>Status:</strong> Active</p>
+                </div>
+            </div>
+            <div class="qr-section">
+                <h3>Your QR Code</h3>
+                <img id="qrCode" alt="Profile QR Code">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Function to load user data
+        async function loadUserData() {
+            const userId = getUrlParameter('id');
+            if (!userId) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/user/${userId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+                const userData = await response.json();
+                
+                // Update the DOM with user data
+                document.getElementById('rollNo').textContent = userData.id;
+                document.getElementById('email').textContent = userData.email;
+                document.getElementById('qrCode').src = `/assets/${userData.id}_qr.png`;
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                alert('Failed to load user data');
+            }
+        }
+
+        // Load user data when page loads
+        loadUserData();
+    </script>
+</body>
+
+</html> 

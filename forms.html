@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forms</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .logo{
+      float: left;
+      width: 40%;
+      height: 120px;
+  }
+  .header{
+      background-color: white;
+      height: 120px;
+      padding-top: 10px;
+      width:100%;
+      padding-bottom: 10px;
+  }
+  h1{
+      color: rgb(33, 33, 182);
+      display: inline-block;
+      text-align: center;
+      font-size: 4rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: bold;
+      padding: 0;
+      margin: 0 0 0 5%;
+  }
+  
+  .navbar{
+      clear: both;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #96f550;
+      padding: 20px;
+      width:100%;
+      border-radius: 10px;
+      height: 50px;
+  }
+
+  a > p{
+    color: black;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+}
+a{
+    text-decoration: none;
+}
+    .form-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin: 1rem 0;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .form-container h2 {
+      margin-top: 0;
+      color: #444;
+      font-size: 1.4rem;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 1.2rem;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img class="logo" src="./assets/iitp-logo.png" alt="LOGO">
+    <h1>IIT-Patna-MESS-website</h1>
+</div>
+<div class="navbar">
+  <a href="./user.html"> <p>home</p> </a>
+  <a href="./assets/menu.pdf"> <p>menu</p> </a>
+  <a href="./forms.html"><p>forms</p></a>
+  <a href="./profile.html"> <p>profile</p> </a>
+  <a href="./about.html"> <p>about</p> </a>
+</div>
+
+  <!-- Feedback Form -->
+  <div class="form-container">
+    <form id="feedbackForm">
+      <h2>Feedback Form</h2>
+
+      <label for="feedback">Feedback</label>
+      <textarea name="feedback" id="feedback" required></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Complaint Form -->
+  <div class="form-container">
+    <form id="complaintForm">
+      <h2>Complaint Form</h2>
+
+      <label for="complaint">Complaint</label>
+      <textarea name="complaint" id="complaint" required></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Leave Application Form -->
+  <div class="form-container">
+    <form>
+      <h2>Leave Form Application</h2>
+      <button type="button" onclick="window.location.href='http://10.15.7.7/messIITP/web/student.php'">Apply</button>
+    </form>
+  </div>
+
+  <script>
+    // Check if user is logged in
+    function checkLogin() {
+        const userId = sessionStorage.getItem('userId');
+        if (!userId) {
+            window.location.href = '/login.html';
+            return;
+        }
+        return userId;
+    }
+
+    // Handle feedback form submission
+    async function handleFeedbackSubmit(event) {
+        event.preventDefault();
+        
+        const userId = checkLogin();
+        if (!userId) {
+            alert('Please login first');
+            return;
+        }
+
+        const feedbackText = document.getElementById('feedback').value;
+
+        try {
+            const response = await fetch('/api/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId,
+                    feedback: feedbackText
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to submit feedback');
+            }
+
+            alert('Feedback submitted successfully!');
+            event.target.reset();
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to submit feedback. Please try again.');
+        }
+    }
+
+    // Handle complaint form submission
+    async function handleComplaintSubmit(event) {
+        event.preventDefault();
+        
+        const userId = checkLogin();
+        if (!userId) {
+            alert('Please login first');
+            return;
+        }
+
+        const complaintText = document.getElementById('complaint').value;
+
+        try {
+            const response = await fetch('/api/complaint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId,
+                    complaint: complaintText
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to submit complaint');
+            }
+
+            alert('Complaint submitted successfully!');
+            event.target.reset();
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to submit complaint. Please try again.');
+        }
+    }
+
+    // Initialize page
+    checkLogin();
+
+    // Add form event listeners
+    const feedbackForm = document.getElementById('feedbackForm');
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', handleFeedbackSubmit);
+    }
+
+    const complaintForm = document.getElementById('complaintForm');
+    if (complaintForm) {
+        complaintForm.addEventListener('submit', handleComplaintSubmit);
+    }
+  </script>
+</body>
+</html>

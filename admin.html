@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - IIT Patna Mess</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .container h1 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .scanner-container {
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .scanner-container h2 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .scan-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .scan-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #34d399;
+        }
+
+        .scan-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #f87171;
+        }
+
+        .user-profile {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .user-profile h3 {
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .user-info {
+            margin-bottom: 15px;
+        }
+
+        .user-info p {
+            margin: 5px 0;
+            color: #4b5563;
+        }
+
+        .user-info strong {
+            color: #1f2937;
+        }
+
+        .submit-scan {
+            background-color: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .submit-scan:hover {
+            background-color: #1e40af;
+        }
+
+        .submit-scan:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .scanner-controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .scanner-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .scanner-btn:hover {
+            background-color: #1e40af;
+        }
+
+        .scanner-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: #4CAF50;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: rgb(5, 1, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #96f550;
+        }
+
+        .card:nth-child(1),
+        .card:nth-child(2),
+        .card:nth-child(3),
+        .card:nth-child(4) {
+            background-color: #96f550;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 0.5rem;
+            }
+        }
+
+        .registration-form {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .registration-form.active {
+            display: flex;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-header h2 {
+            margin: 0;
+            color: #1f2937;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img class="logo" src="/assets/iitp-logo.png" alt="LOGO">
+        <h1>IIT-Patna-MESS-website</h1>
+    </div>
+    <div class="navbar">
+        <a href="/admin.html"><p>Home</p></a>
+        <a href="/assets/menu.pdf"><p>Menu</p></a>
+        <a href="/login.html"><p>Login</p></a>
+        <a href="/adminlogin.html"><p>Admin</p></a>
+        <a href="/about.html"><p>About</p></a>
+    </div>
+
+    <div class="container">
+        <h1>Welcome, Admin</h1>
+        
+        <div class="scanner-container">
+            <h2>QR Code Scanner</h2>
+            <div id="reader"></div>
+            <div id="scanResult" class="scan-result"></div>
+            
+            <div id="userProfile" class="user-profile">
+                <h3>User Profile</h3>
+                <div class="user-info">
+                    <p><strong>Roll Number:</strong> <span id="userId"></span></p>
+                    <p><strong>Email:</strong> <span id="userEmail"></span></p>
+                    <p><strong>Last Scan:</strong> <span id="lastScanTime"></span></p>
+                </div>
+                <button id="submitScan" class="submit-scan" onclick="submitScan()">Submit Scan</button>
+            </div>
+
+            <div class="scanner-controls">
+                <button class="scanner-btn" onclick="toggleScanner()">
+                    <img src="/assets/scanner.jpeg" alt="Scanner Icon"> Toggle Scanner
+                </button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <a href="./admin-dashboard.html" class="card">
+                <div>View Users</div>
+            </a>
+            <a href="./admin-feedback.html" class="card">
+                <div>View Feedback</div>
+            </a>
+            <a href="./admin-complaints.html" class="card">
+                <div>View Complaints</div>
+            </a>
+            <div class="card" onclick="showRegistrationForm()">
+                <div>Register New user</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Form Modal -->
+    <div id="registrationForm" class="registration-form">
+        <div class="form-container">
+            <div class="form-header">
+                <h2>Register New User</h2>
+                <button class="close-btn" onclick="hideRegistrationForm()">&times;</button>
+            </div>
+            <form id="userRegistrationForm" onsubmit="handleRegistration(event)">
+                <div class="form-group">
+                    <label for="rollNo">Roll Number</label>
+                    <input type="text" id="rollNo" name="rollNo" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn">Register User</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let html5QrcodeScanner = null;
+        let isScannerActive = false;
+        let currentUserId = null;
+
+        // Check if admin is logged in
+        if (!sessionStorage.getItem('isAdmin')) {
+            window.location.href = '/adminlogin.html';
+        }
+
+        function handleClick(cardName) {
+            alert(`You clicked on ${cardName}`);
+        }
+
+        function toggleScanner() {
+            if (!isScannerActive) {
+                startScanner();
+            } else {
+                stopScanner();
+            }
+        }
+
+        function startScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear();
+            }
+
+            // Reset user profile
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('submitScan').disabled = true;
+            currentUserId = null;
+
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            html5QrcodeScanner.start(
+                { facingMode: "environment" },
+                config,
+                onScanSuccess,
+                onScanFailure
+            );
+
+            isScannerActive = true;
+            document.querySelector('.scanner-btn').textContent = 'Stop Scanner';
+        }
+
+        function stopScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then(() => {
+                    html5QrcodeScanner.clear();
+                    isScannerActive = false;
+                    document.querySelector('.scanner-btn').textContent = 'Start Scanner';
+                }).catch(err => {
+                    console.error("Error stopping scanner:", err);
+                });
+            }
+        }
+
+        async function onScanSuccess(decodedText) {
+            try {
+                // Extract user ID from the QR code URL
+                const url = new URL(decodedText);
+                const userId = url.searchParams.get('id');
+
+                if (!userId) {
+                    throw new Error('Invalid QR code format');
+                }
+
+                // Store current user ID
+                currentUserId = userId;
+
+                // Fetch user profile
+                const response = await fetch(`/api/admin/user-profile/${userId}`, {
+                    headers: {
+                        'admin-id': sessionStorage.getItem('adminId')
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Display user profile
+                    document.getElementById('userId').textContent = data.user.id;
+                    document.getElementById('userEmail').textContent = data.user.email;
+                    document.getElementById('lastScanTime').textContent = 
+                        data.user.last_scan_time ? new Date(data.user.last_scan_time).toLocaleString() : 'Never';
+                    
+                    // Show profile and enable submit button
+                    document.getElementById('userProfile').style.display = 'block';
+                    document.getElementById('submitScan').disabled = false;
+                    
+                    // Stop scanner
+                    stopScanner();
+                } else {
+                    showScanResult('error', data.error || 'Failed to fetch user profile');
+                }
+            } catch (error) {
+                showScanResult('error', 'Invalid QR code or error processing scan');
+                console.error('Scan error:', error);
+            }
+        }
+
+        async function submitScan() {
+            if (!currentUserId) return;
+
+            try {
+                const response = await fetch('/api/admin/update-scan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'admin-id': sessionStorage.getItem('adminId')
+                    },
+                    body: JSON.stringify({ userId: currentUserId })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showScanResult('success', `Successfully updated scan time for user: ${data.user.email}`);
+                    // Update last scan time in profile
+                    document.getElementById('lastScanTime').textContent = 
+                        new Date(data.user.last_scan_time).toLocaleString();
+                    // Disable submit button
+                    document.getElementById('submitScan').disabled = true;
+                } else {
+                    // Handle time difference error
+                    if (response.status === 400 && data.error === "Cannot scan again") {
+                        const lastScan = new Date(data.lastScanTime).toLocaleString();
+                        const timeLeft = Math.round(135 - data.timeDiffInMinutes);
+                        showScanResult('error', 
+                            `${data.message}\nLast scan: ${lastScan}\nTime remaining: ${timeLeft} minutes`);
+                    } else {
+                        showScanResult('error', data.error || 'Failed to update scan time');
+                    }
+                }
+            } catch (error) {
+                showScanResult('error', 'Error updating scan time');
+                console.error('Submit error:', error);
+            }
+        }
+
+        function onScanFailure(error) {
+            // Handle scan failure silently
+            console.warn(`QR scan failed: ${error}`);
+        }
+
+        function showScanResult(type, message) {
+            const resultDiv = document.getElementById('scanResult');
+            // Replace newlines with <br> tags for proper display
+            resultDiv.innerHTML = message.replace(/\n/g, '<br>');
+            resultDiv.className = `scan-result scan-${type}`;
+            resultDiv.style.display = 'block';
+
+            // Hide the result after 5 seconds for error messages
+            const hideDelay = type === 'error' ? 5000 : 3000;
+            setTimeout(() => {
+                resultDiv.style.display = 'none';
+            }, hideDelay);
+        }
+
+        // Clean up scanner when page is unloaded
+        window.addEventListener('beforeunload', () => {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().catch(err => {
+                    console.error("Error stopping scanner:", err);
+                });
+            }
+        });
+
+        function showRegistrationForm() {
+            document.getElementById('registrationForm').classList.add('active');
+        }
+
+        function hideRegistrationForm() {
+            document.getElementById('registrationForm').classList.remove('active');
+        }
+
+        async function handleRegistration(event) {
+            event.preventDefault();
+            
+            const rollNo = document.getElementById('rollNo').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ rollNo, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('User registered successfully!');
+                    hideRegistrationForm();
+                    document.getElementById('userRegistrationForm').reset();
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('An error occurred during registration');
+            }
+        }
+    </script>
+</body>
+</html>

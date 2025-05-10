@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - IIT Patna Mess</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        .form-switch {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .form-switch a {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .form-switch a:hover {
+            text-decoration: underline;
+        }
+        .admin-note {
+            text-align: center;
+            color: #dc2626;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        .login-card {
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .login-card .title {
+            color: #1f2937;
+        }
+        .input-field {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            border: 1px solid #e5e7eb;
+        }
+        .input-field::placeholder {
+            color: #9ca3af;
+        }
+        .login-button {
+            background-color: #2563eb;
+        }
+        .login-button:hover {
+            background-color: #1e40af;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <img class="logo" src="./assets/iitp-logo.png" alt="LOGO">
+        <h1>IIT-Patna-MESS-website</h1>
+    </div>
+    <div class="navbar">
+        <a href="./home.html"><p>Home</p></a>
+        <a href="./assets/menu.pdf"><p>Menu</p></a>
+        <a href="./forms.html"><p>Forms</p></a>
+        <a href="./login.html"><p>Login</p></a>
+        <a href="./adminlogin.html"><p>Admin</p></a>
+        <a href="./about.html"><p>About</p></a>
+    </div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <h2 class="title">Admin Login</h2>
+            <input type="text" id="adminUsername" placeholder="Admin Username" class="input-field" />
+            <input type="password" id="adminPassword" placeholder="Admin Password" class="input-field" />
+            <button onclick="handleAdminLogin()" class="login-button">Login as Admin</button>
+            <p class="admin-note">This login is restricted to authorized mess administrators only.</p>
+        </div>
+    </div>
+
+    <script>
+        async function handleAdminLogin() {
+            const username = document.getElementById("adminUsername").value;
+            const password = document.getElementById("adminPassword").value;
+            
+            if (!username || !password) {
+                alert("Please fill in all fields");
+                return;
+            }
+            
+            try {
+                const response = await fetch("/api/admin/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+                
+                if (data.message === "Admin login successful") {
+                    // Store admin session
+                    sessionStorage.setItem('adminId', data.adminId);
+                    sessionStorage.setItem('isAdmin', 'true');
+                    
+                    // Redirect to admin page
+                    window.location.href = '/admin.html';
+                } else {
+                    errorMessage.textContent = data.error || "Login failed";
+                    errorMessage.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                alert("An error occurred during login");
+            }
+        }
+    </script>
+</body>
+
+</html> 

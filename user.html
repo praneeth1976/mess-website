@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agency</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .qr-box img {
+        cursor: pointer;
+        max-width: 200px;
+        transition: transform 0.3s ease;
+    }
+    .qr-box img:hover {
+        transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+    <div class="header">
+        <img class="logo" src="./assets/iitp-logo.png" alt="LOGO">
+        <h1>IIT-Patna-MESS-website</h1>
+    </div>
+    <div class="navbar">
+        <a href="./user.html"> <p>home</p> </a>
+        <a href="./assets/menu.pdf"> <p>menu</p> </a>
+        <a href="./forms.html"><p>forms</p></a>
+        <a id="profileLink" href="#"><p>profile</p></a>
+        <a href="./about.html"> <p>about</p> </a>
+    </div>
+
+    <main>
+        <div class="content-row">
+            <!-- QR Box -->
+            <div class="qr-box">
+                <h2>QR-CODE</h2>
+                <a id="qrLink" href="#" target="_blank">
+                    <img id="userQrCode" alt="QR Code">
+                </a>
+            </div>
+    
+            <!-- Meal confirmation form -->
+            <div class="meal-form">
+                <h2>Meal Confirmation</h2>
+                <form id="mealForm">
+                    <p>Do you want to attend tomorrow's meal?</p>
+                    <label>
+                        <input type="radio" name="meal" value="yes"> Yes
+                    </label>
+                    <label>
+                        <input type="radio" name="meal" value="no" checked> No
+                    </label>
+                    <br><br>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+
+            <div class="qr-box">
+                <h2>Weekday Timings</h2>
+                <p>Breakfast: 8:00 – 10:00</p>
+                <p>Lunch: 12:30 – 2:00</p>
+                <p>Dinner: 7:45 – 10:00</p>
+              </div>
+        
+              <!-- Weekend Timings Box -->
+              <div class="qr-box">
+                <h2>Weekend Timings</h2>
+                <p>Breakfast: 8:30 – 10:30</p>
+                <p>Lunch: 1:00 – 2:30</p>
+                <p>Dinner: 7:45 – 10:00</p>
+              </div>
+        </div>
+    </main>
+    <div class="datetime-box">
+        <p id="datetime"></p>
+    </div>
+    
+    < 
+    <script>
+        // Check if user is logged in
+        function checkLogin() {
+            const userId = sessionStorage.getItem('userId');
+            if (!userId) {
+                window.location.href = '/login.html';
+                return;
+            }
+            return userId;
+        }
+
+        // Update profile link and QR code
+        function updateUserElements() {
+            const userId = checkLogin();
+            if (userId) {
+                // Update profile link
+                const profileLink = document.getElementById('profileLink');
+                profileLink.href = `/profile.html?id=${userId}`;
+
+                // Update QR code image and link
+                const qrPath = `/assets/${userId}_qr.png`;
+                const userQrCode = document.getElementById('userQrCode');
+                const qrLink = document.getElementById('qrLink');
+                
+                userQrCode.src = qrPath;
+                qrLink.href = qrPath;
+            }
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const date = now.toLocaleDateString(undefined, options);
+            const time = now.toLocaleTimeString();
+            document.getElementById("datetime").textContent = `${date} | ${time}`;
+        }
+
+        // Meal form submission handler
+        async function handleMealFormSubmit(event) {
+            event.preventDefault();
+            
+            const userId = sessionStorage.getItem('userId');
+            if (!userId) {
+                alert('Please login first');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            const mealChoice = document.querySelector('input[name="meal"]:checked').value;
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const date = tomorrow.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+            try {
+                const response = await fetch('/api/meal-confirmation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        date,
+                        willAttend: mealChoice === 'yes'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit meal confirmation');
+                }
+
+                const result = await response.json();
+                alert('Meal confirmation submitted successfully!');
+                
+                // Reset form
+                event.target.reset();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to submit meal confirmation. Please try again.');
+            }
+        }
+    
+        // Initialize page
+        updateUserElements();
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // Add meal form event listener
+        const mealForm = document.getElementById('mealForm');
+        if (mealForm) {
+            mealForm.addEventListener('submit', handleMealFormSubmit);
+        }
+    </script>
+</body>
+
+</html>
